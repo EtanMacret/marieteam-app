@@ -1,5 +1,6 @@
 package fr.lfednail;
 
+import fr.lfednail.constants.Constants;
 import fr.lfednail.database.DatabaseConnection;
 
 import java.awt.event.WindowAdapter;
@@ -10,7 +11,7 @@ public class Main {
         MainFrame mainFrame = new MainFrame();
         mainFrame.setVisible(true);
 
-        DatabaseConnection connection = new DatabaseConnection("jdbc:mysql://localhost/marieteam_nef_php", "root", "");
+        DatabaseConnection connection = new DatabaseConnection(Constants.DATABASE_URL, Constants.DATABASE_USER, Constants.DATABASE_PASSWORD);
 
         mainFrame.addWindowListener(
                 new WindowAdapter() {
