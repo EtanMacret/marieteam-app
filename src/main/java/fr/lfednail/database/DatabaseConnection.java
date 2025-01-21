@@ -13,7 +13,7 @@ public class DatabaseConnection {
         {
             Class.forName("org.gjt.mm.mysql.Driver");
 
-            connexion = DriverManager.getConnection("jdbc:mysql://localhost/garageme", "root", "");
+            connexion = DriverManager.getConnection("jdbc:mysql://localhost/marieteam_nef_php", "root", "");
             JOptionPane.showMessageDialog(null, "Connexion OK!");
 
             connexion.setAutoCommit(false);
