@@ -6,29 +6,37 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DatabaseConnection {
+    private final Connection connection;
 
-    public DatabaseConnection(){
-        Connection connexion = null;
-        try
-        {
-            Class.forName("org.gjt.mm.mysql.Driver");
-
-            connexion = DriverManager.getConnection("jdbc:mysql://localhost/marieteam_nef_php", "root", "");
-            JOptionPane.showMessageDialog(null, "Connexion OK!");
-
-            connexion.setAutoCommit(false);
-        }catch(ClassNotFoundException ex) {
-            JOptionPane.showMessageDialog(null, "Class introuvable :\t" + ex.getMessage());
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "Connexion impossible :\t" + ex.getMessage());
-        } finally {
-            try {
-                if (connexion != null)
-                    connexion.close();
-            } catch (SQLException ex) {
-                ex.printStackTrace();
+    /**
+     * Établit une connexion à la base de données.
+     *
+     * @param databaseUrl URL de la base de données
+     * @param user        Nom d'utilisateur
+     * @param password    Mot de passe
+     * @throws RuntimeException si la connexion échoue
+     */
+    public DatabaseConnection(String databaseUrl, String user, String password) {
+        try {
+            this.connection = DriverManager.getConnection(databaseUrl, user, password);
+            if (connection != null) {
+                System.out.println("\n☑️ MarieTeam: connection established to the database \n");
             }
+        } catch (SQLException e) {
+            throw new RuntimeException("Unable to connect to the database");
         }
-        System.exit(0);
+    }
+
+    public Connection getConnection() {
+        return connection;
+    }
+
+
+    public void closeConnection() {
+        try {
+            connection.close();
+        } catch (SQLException e) {
+            throw new RuntimeException("Unable to close the database connection");
+        }
     }
 }
