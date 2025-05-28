@@ -7,9 +7,9 @@ import org.openqa.selenium.chrome.ChromeOptions;
 
 public class JsonWebRequest {
     public static String getRequest(String url){
-        // Optional: headless mode
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--headless=new"); // or omit for visible browser
+            // Optional: headless mode
+            ChromeOptions options = new ChromeOptions();
+            options.addArguments("--headless=new"); // or omit for visible browser
 
         WebDriver driver = new ChromeDriver(options);
 

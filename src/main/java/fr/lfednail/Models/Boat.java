@@ -12,6 +12,9 @@ import com.google.gson.annotations.SerializedName;
 
 
 import fr.lfednail.JsonWebRequest;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 
 public class Boat {
 
@@ -84,7 +87,7 @@ public class Boat {
     public static Boat getBoatByID(int id) throws Exception {
 
         try {
-            String jsonString = JsonWebRequest.getRequest("https://marieteamnef.42web.io/api/boat/GET" + id);
+            String jsonString = JsonWebRequest.getRequest("https://marieteamnef.42web.io/api/boat/GET/" + id);
             Gson gson = new Gson();
             return gson.fromJson(jsonString, new TypeToken<Boat>(){}.getType());
         } catch (Exception e) {
