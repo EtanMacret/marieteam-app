@@ -1,7 +1,7 @@
-package fr.lfednail;
+package fr.lfednail.frame;
 
+import fr.lfednail.Models.Boat;
 import fr.lfednail.constants.Constants;
-import fr.lfednail.database.DatabaseConnection;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,14 +9,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class MainFrame extends JFrame {
-
-    private final DatabaseConnection connection;
 
     private JLabel labelOptionBoat;
     private JComboBox listOptionBoat;
@@ -30,24 +27,26 @@ public class MainFrame extends JFrame {
     private JTextField speedBoat;
     private JLabel labelNbSeatBoat;
     private JTextField nbSeatBoat;
+    private JLabel labelNbVehicleInf5;
+    private JTextField nbVehicleInf5;
+    private JLabel labelNbVehicleSup5;
+    private JTextField nbVehicleSup5;
     private Container contentPane;
     private SpringLayout layout;
     private JButton buttonUpdate = new JButton("Mettre à jour");
 
-    public MainFrame() {
+    private List<Boat> listBoat = Boat.getAllBoat();
+
+    public MainFrame() throws Exception {
         setSize(Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
         setTitle("MarieTeam Application");
-
-        connection = new DatabaseConnection(Constants.DATABASE_URL, Constants.DATABASE_USER, Constants.DATABASE_PASSWORD);
 
         ArrayList<String> listBoatName = new ArrayList<>();
         listBoatName.add("");
 
         try {
-            Statement Statementstatement = connection.getConnection().createStatement();
-            ResultSet resultSet = Statementstatement.executeQuery("SELECT Nom_bateau FROM bateau WHERE Type_bateau like 'Voyageur'");
-            while(resultSet.next()){
-                listBoatName.add(resultSet.getString("Nom_bateau"));
+            for (Boat boat : listBoat) {
+                listBoatName.add(boat.getNomBateau());
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -73,6 +72,12 @@ public class MainFrame extends JFrame {
 
         nbSeatBoat = new JTextField(15);
         labelNbSeatBoat = new JLabel("Nombre de places : ");
+
+        nbVehicleInf5 = new JTextField(15);
+        labelNbVehicleInf5 = new JLabel("Nombre de palce pour vehicule inferieur a 5 metres");
+
+        nbVehicleSup5 = new JTextField(15);
+        labelNbVehicleSup5 = new JLabel("Nombre de palce pour vehicule supereieur a 5 metres");
 
         //Image imageBoat = new ImageIcon("C:/Users/etan.macret/Documents/marieteam-app/src/main/resources/boat.png").getImage();
 
@@ -117,6 +122,18 @@ public class MainFrame extends JFrame {
         layout.putConstraint(SpringLayout.WEST, nbSeatBoat, 10, SpringLayout.EAST, labelNbSeatBoat);
         layout.putConstraint(SpringLayout.NORTH, nbSeatBoat, 0, SpringLayout.NORTH, labelNbSeatBoat);
 
+        //Nb vehicle inf5
+        layout.putConstraint(SpringLayout.WEST, labelNbVehicleInf5, 10, SpringLayout.WEST, contentPane);
+        layout.putConstraint(SpringLayout.NORTH, labelNbVehicleInf5, 30, SpringLayout.SOUTH, nbSeatBoat);
+        layout.putConstraint(SpringLayout.WEST, nbVehicleInf5, 10, SpringLayout.EAST, labelNbVehicleInf5);
+        layout.putConstraint(SpringLayout.NORTH, nbVehicleInf5, 0, SpringLayout.NORTH, labelNbVehicleInf5);
+
+        //Nb vehicle sup5
+        layout.putConstraint(SpringLayout.WEST, labelNbVehicleSup5, 10, SpringLayout.WEST, contentPane);
+        layout.putConstraint(SpringLayout.NORTH, labelNbVehicleSup5, 30, SpringLayout.SOUTH, nbVehicleInf5);
+        layout.putConstraint(SpringLayout.WEST, nbVehicleSup5, 10, SpringLayout.EAST, labelNbVehicleSup5);
+        layout.putConstraint(SpringLayout.NORTH, nbVehicleSup5, 0, SpringLayout.NORTH, labelNbVehicleSup5);
+
         //Update button
         layout.putConstraint(SpringLayout.WEST, buttonUpdate, 10, SpringLayout.WEST, contentPane);
         layout.putConstraint(SpringLayout.SOUTH, buttonUpdate, -10, SpringLayout.SOUTH, contentPane);
@@ -128,6 +145,8 @@ public class MainFrame extends JFrame {
         contentPane.add(widthBoat);
         contentPane.add(speedBoat);
         contentPane.add(nbSeatBoat);
+        contentPane.add(nbVehicleInf5);
+        contentPane.add(nbVehicleSup5);
         contentPane.add(buttonUpdate);
 
         //labels
@@ -137,12 +156,13 @@ public class MainFrame extends JFrame {
         contentPane.add(labelWidthBoat);
         contentPane.add(labelSpeedBoat);
         contentPane.add(labelNbSeatBoat);
+        contentPane.add(labelNbVehicleInf5);
+        contentPane.add(labelNbVehicleSup5);
 
         //on close
         addWindowListener(
                 new WindowAdapter() {
                     public void windowClosing(WindowEvent e) {
-                        connection.closeConnection();
                         System.exit(0);
                     }
                 }
@@ -158,21 +178,22 @@ public class MainFrame extends JFrame {
                     widthBoat.setText("");
                     speedBoat.setText("");
                     nbSeatBoat.setText("");
+                    nbVehicleInf5.setText("");
+                    nbVehicleSup5.setText("");
                     //imageBoat.setImage(null);
                 }
                 //if boat is selected
                 else{
                     try {
-                        Statement Statementstatement = connection.getConnection().createStatement();
-                        ResultSet resultSet = Statementstatement.executeQuery("SELECT * FROM viewvoyageur WHERE Nom_bateau = '" + listOptionBoat.getSelectedItem() + "'");
-                        while(resultSet.next()){
-                            nameBoat.setText(Objects.requireNonNull(listOptionBoat.getSelectedItem()).toString());
-                            lengthBoat.setText(resultSet.getString("Longueur_bateau"));
-                            widthBoat.setText(resultSet.getString("Largeur_bateau"));
-                            speedBoat.setText(resultSet.getString("Vitesse"));
-                            nbSeatBoat.setText(resultSet.getString("Places"));
+                        Boat chosenBoat = listBoat.get(listOptionBoat.getSelectedIndex() - 1);
+                        nameBoat.setText(chosenBoat.getNomBateau());
+                        lengthBoat.setText(String.valueOf(chosenBoat.getLongueurBateau()));
+                        widthBoat.setText(String.valueOf(chosenBoat.getLargeurBateau()));
+                        speedBoat.setText(String.valueOf(chosenBoat.getSpeedBoat()));
+                        nbSeatBoat.setText(String.valueOf(chosenBoat.getNbSeatBoat()));
+                        nbVehicleInf5.setText(String.valueOf(chosenBoat.getNbVehicleInf5()));
+                        nbVehicleSup5.setText(String.valueOf(chosenBoat.getNbVehicleSup5()));
                             //imageBoat.setImage(new ImageIcon("C:/Users/etan.macret/Documents/marieteam-app/src/main/resources/boat.png").getImage());
-                        }
                     } catch (Exception error) {
                         System.out.println(error.getMessage());
                     }

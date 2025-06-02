@@ -12,9 +12,6 @@ import com.google.gson.annotations.SerializedName;
 
 
 import fr.lfednail.JsonWebRequest;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 
 public class Boat {
 
@@ -30,8 +27,17 @@ public class Boat {
     @SerializedName("Largeur_bateau")
     private int largeurBateau;
 
-    @SerializedName("Type_bateau")
-    private String typeBateau;
+    @SerializedName("Vitesse")
+    private int speedBoat;
+
+    @SerializedName("Places_passager")
+    private int nbSeatBoat;
+
+    @SerializedName("Places_vehicules_inf_5")
+    private int nbVehicleInf5;
+
+    @SerializedName("Places_vehicules_sup_5")
+    private int nbVehicleSup5;
 
     // Getters and setters
     public int getIdBateau() {
@@ -66,17 +72,41 @@ public class Boat {
         this.largeurBateau = largeurBateau;
     }
 
-    public String getTypeBateau() {
-        return typeBateau;
+    public int getSpeedBoat() {
+        return speedBoat;
     }
 
-    public void setTypeBateau(String typeBateau) {
-        this.typeBateau = typeBateau;
+    public void setSpeedBoat(int speedBoat) {
+        this.speedBoat = speedBoat;
+    }
+
+    public int getNbSeatBoat() {
+        return nbSeatBoat;
+    }
+
+    public void setNbSeatBoat(int nbSeatBoat) {
+        this.nbSeatBoat = nbSeatBoat;
+    }
+
+    public int getNbVehicleInf5() {
+        return nbVehicleInf5;
+    }
+
+    public void setNbVehicleInf5(int nbVehicleInf5) {
+        this.nbVehicleInf5 = nbVehicleInf5;
+    }
+
+    public int getNbVehicleSup5() {
+        return nbVehicleSup5;
+    }
+
+    public void setNbVehicleSup5(int nbVehicleSup5) {
+        this.nbVehicleSup5 = nbVehicleSup5;
     }
 
     public static List<Boat> getAllBoat() throws Exception {
         try {
-            String jsonString = JsonWebRequest.getRequest("https://marieteamnef.42web.io/api/boat/GET");
+            String jsonString = JsonWebRequest.getRequest("https://marieteamnef.42web.io/api/boatCruise/GET");
             Gson gson = new Gson();
             return gson.fromJson(jsonString, new TypeToken<List<Boat>>(){}.getType());
         } catch (Exception e) {
@@ -87,7 +117,7 @@ public class Boat {
     public static Boat getBoatByID(int id) throws Exception {
 
         try {
-            String jsonString = JsonWebRequest.getRequest("https://marieteamnef.42web.io/api/boat/GET/" + id);
+            String jsonString = JsonWebRequest.getRequest("https://marieteamnef.42web.io/api/boatCruise/GET/" + id);
             Gson gson = new Gson();
             return gson.fromJson(jsonString, new TypeToken<Boat>(){}.getType());
         } catch (Exception e) {
@@ -99,10 +129,13 @@ public class Boat {
     public String toString() {
         return "Boat{" +
                 "idBateau=" + idBateau +
+                ", nomBateau='" + nomBateau + '\'' +
                 ", longueurBateau=" + longueurBateau +
                 ", largeurBateau=" + largeurBateau +
-                ", nomBateau='" + nomBateau + '\'' +
-                ", typeBateau='" + typeBateau + '\'' +
+                ", speedBoat=" + speedBoat +
+                ", nbSeatBoat=" + nbSeatBoat +
+                ", nbVehicleInf5=" + nbVehicleInf5 +
+                ", nbVehicleSup5=" + nbVehicleSup5 +
                 '}';
     }
 }
